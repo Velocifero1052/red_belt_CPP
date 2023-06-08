@@ -6,14 +6,27 @@
 
 using namespace std;
 
-#define PRINT_VALUES(out, x, y) out << (x) << '\n' << (y) << '\n'
+#define S1(x) #x
+#define S2(x) S1(x)
+
+#define C() __
+
+#define A(b) uniquename_##__LINE__
+
+#define UNIQ_ID A(varabile)
+
+
+#define LOCATION __FILE__ S2(__LINE__)
 
 int main() {
-    TestRunner tr;
-    tr.RunTest([] {
-        ostringstream output;
-        PRINT_VALUES(output, 5, "red belt");
-        ASSERT_EQUAL(output.str(), "5\nred belt\n");
-    }, "PRINT_VALUES usage example");
 
+    int UNIQ_ID = 0;
+    cout << LOCATION << endl;
+  //  string UNIQ_ID = "hello";
+
+  /*  string UNIQ_ID = "hello";
+    vector<string> UNIQ_ID = {"hello", "world"};
+    vector<int> UNIQ_ID = {1, 2, 3, 4};*/
+  return 0;
 }
+

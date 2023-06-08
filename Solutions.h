@@ -121,4 +121,15 @@ void test_max_by_predicate() {
     tr.RunTest(TestNoMax, "TestNoMax");
 }
 
+#define PRINT_VALUES(out, x, y) out << (x) << '\n' << (y) << '\n'
+
+void print_values_tests() {
+    TestRunner tr;
+    tr.RunTest([] {
+        ostringstream output;
+        PRINT_VALUES(output, 5, "red belt");
+        ASSERT_EQUAL(output.str(), "5\nred belt\n");
+    }, "PRINT_VALUES usage example");
+}
+
 #endif //RED_BELT_C___SOLUTIONS_H
