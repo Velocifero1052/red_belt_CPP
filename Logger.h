@@ -44,31 +44,24 @@ bool Logger::GetLogLine() {
 }
 
 void Logger::Log(const string& message) {
-    if (GetLogFile() && GetLogLine()) {
-        os << __FILE__ << " " << __LINE__ << message;
-    } else if (GetLogFile()) {
-        os << __FILE__ << " " << message;
-    } else if (GetLogLine()) {
-        os << __LINE__ << " " << message;
-    } else {
-        os << message;
-    }
+    os << message << '\n';
 }
 
-#define LOG(logger, message) \
-            logger.Log(message)
+#define LOG(logger, message) { \
+            ostringstream os;            \
+            if (logger.GetLogFile() && logger.GetLogLine()) \
+                os << __FILE__ << ":" << __LINE__ << " " << message; \
+            else if (logger.GetLogFile())\
+                os << __FILE__ << " " << message;   \
+            else if (logger.GetLogLine())\
+                os << "Line " << __LINE__ << " " << message;         \
+            else               \
+                os << message;\
+            logger.Log(os.str());\
+}
 
 void TestLog() {
-/* Для написания юнит-тестов в этой задаче нам нужно фиксировать конкретные
- * номера строк в ожидаемом значении (см. переменную expected ниже). Если
- * мы добавляем какой-то код выше функции TestLog, то эти номера строк меняются,
- * и наш тест начинает падать. Это неудобно.
- *
- * Чтобы этого избежать, мы используем специальный макрос #line
- * (http://en.cppreference.com/w/cpp/preprocessor/line), который позволяет
- * переопределить номер строки, а также имя файла. Благодаря ему, номера
- * строк внутри функции TestLog будут фиксированы независимо от того, какой
- * код мы добавляем перед ней*/
+
 #line 1 "logger.cpp"
 
     ostringstream logs;
