@@ -132,4 +132,9 @@ void print_values_tests() {
     }, "PRINT_VALUES usage example");
 }
 
+#define CONCAT(b) CONCAT_INNER(a, b)
+#define CONCAT_INNER(a, b) a ## b
+
+#define UNIQ_ID CONCAT(__LINE__)
+
 #endif //RED_BELT_C___SOLUTIONS_H
