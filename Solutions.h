@@ -165,4 +165,34 @@ void test_method() {
     }
 }
 
+template<typename T>
+class Table {
+public:
+    Table(size_t n_, size_t m_) {
+        Resize(n_, m_);
+    }
+    vector<T> operator[](size_t index) const {
+        return table[index];
+    }
+
+    vector<T>& operator[](size_t index) {
+        return table[index];
+    }
+    void Resize(size_t n_, size_t m_) {
+        table.resize(n_);
+        for (int i = 0; i < n_; i++) {
+            table[i].resize(m_);
+        }
+        n = n_;
+        m = m_;
+    }
+    pair<size_t, size_t> Size() const {
+        return make_pair(this->n, this->m);
+    }
+private:
+    vector<vector<T>> table;
+    size_t n, m;
+};
+
+
 #endif //RED_BELT_C___SOLUTIONS_H
