@@ -6,17 +6,63 @@
 #include <string>
 using namespace std;
 
+void TestPageCounts();
+void TestLooping();
+void TestModification();
+void TestPageSizes();
+void TestConstContainer();
+void TestPagePagination();
+
 // Реализуйте шаблон класса Paginator
 
 template <typename Iterator>
 class Paginator {
 };
 
-template <typename C>
+/*template <typename C>
 ??? Paginate(C& c, size_t page_size) {
 // Реализуйте этот шаблон функции
+}*/
+
+/**/
+
+template <typename Iterator>
+struct IteratorRange {
+    Iterator first, last;
+    Iterator begin(){
+        return first;
+    }
+    Iterator end(){
+        return last;
+    }
+};
+
+template <typename T>
+IteratorRange<typename vector<T>::iterator> Head(vector<T>& v, size_t top) {
+    return {v.begin(), next(v.begin(), min(top, v.size()))};
 }
 
+
+int main() {
+    /*TestRunner tr;
+    RUN_TEST(tr, TestPageCounts);
+    RUN_TEST(tr, TestLooping);
+    RUN_TEST(tr, TestModification);
+    RUN_TEST(tr, TestPageSizes);
+    RUN_TEST(tr, TestConstContainer);
+    RUN_TEST(tr, TestPagePagination);*/
+
+    vector<int> v{1, 2, 3, 4, 5, 6, 7, 8};
+    for (int& num : Head(v, 5)) {
+        cout << num << " ";
+    }
+
+
+}
+
+
+
+/*
 void TestPageCounts() {
     vector<int> v(15);
 
@@ -107,14 +153,9 @@ void TestPagePagination() {
     };
     ASSERT_EQUAL(lines, expected);
 }
+*/
 
-int main() {
-    TestRunner tr;
-    RUN_TEST(tr, TestPageCounts);
-    RUN_TEST(tr, TestLooping);
-    RUN_TEST(tr, TestModification);
-    RUN_TEST(tr, TestPageSizes);
-    RUN_TEST(tr, TestConstContainer);
-    RUN_TEST(tr, TestPagePagination);
-}
+
+
+
 
