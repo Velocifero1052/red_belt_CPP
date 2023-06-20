@@ -42,6 +42,10 @@ IteratorRange<typename vector<T>::iterator> Head(vector<T>& v, size_t top) {
     return {v.begin(), next(v.begin(), min(top, v.size()))};
 }
 
+template <typename T>
+size_t RangeSize(const IteratorRange<T>& r){
+    return r.end() - r.begin();
+}
 
 int main() {
     /*TestRunner tr;
