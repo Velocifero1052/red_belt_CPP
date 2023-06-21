@@ -48,8 +48,10 @@ public:
     for (size_t i = 0; i < pages_count; i++) {
       if(i + 1 < pages_count) {
         pages.push_back(IteratorRange(next(first, i * size_of_page_), next(first, i * size_of_page_ + size_of_page_)));
-      } else {
+      } else if(last_page_size != 0) {
         pages.push_back(IteratorRange(next(first, i * size_of_page_), next(first, i * size_of_page_ + last_page_size)));
+      } else {
+        pages.push_back(IteratorRange(next(first, i * size_of_page_), next(first, i * size_of_page_ + size_of_page_)));
       }
     }
 
@@ -195,9 +197,9 @@ int main() {
   //passes
   //RUN_TEST(tr, TestConstContainer);
   //fails
- // RUN_TEST(tr, TestPagePagination);
+  RUN_TEST(tr, TestPagePagination);
 
-  vector<int> v(22);
+/*  vector<int> v(22);
   iota(begin(v), end(v), 1);
   const auto split_by_9_v= Paginate(v, 9);
 
@@ -208,7 +210,7 @@ int main() {
       }
       cout << "\n";
     }
-  }
+  }*/
 
 }
 
