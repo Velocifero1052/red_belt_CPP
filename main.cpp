@@ -55,9 +55,9 @@ void TestSorting() {
 }
 
 int main() {
-
-  cout << "Paginator solved!\n";
-
+  TestRunner tr;
+  RUN_TEST(tr, TestComparison);
+  RUN_TEST(tr, TestSorting);
   return 0;
 }
 
