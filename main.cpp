@@ -1,12 +1,13 @@
 #include <iostream>
 #include <algorithm>
 #include <string>
+#include <set>
+#include <string>
+#include <vector>
 #include <random>
-#include "student.h"
-#include "test_runner.h"
-#include "profile.h"
+//#include "test_runner.h"
 
-using std::cout;
+using namespace std;
 
 
 

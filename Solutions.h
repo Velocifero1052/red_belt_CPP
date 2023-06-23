@@ -242,4 +242,22 @@ vector<Student> generate_students(int num) {
   return students;
 }
 
+
+class Learner {
+private:
+  set<string> dict;
+
+public:
+  int Learn(const vector<string>& words) {
+    size_t initial_size = dict.size();
+    dict.insert(words.begin(), words.end());
+    int new_words = dict.size() - initial_size;
+    return new_words;
+  }
+
+  vector<string> KnownWords() {
+    return {dict.begin(), dict.end()};
+  }
+};
+
 #endif //RED_BELT_C___SOLUTIONS_H
