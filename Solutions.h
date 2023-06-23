@@ -6,7 +6,7 @@
 #define RED_BELT_C___SOLUTIONS_H
 
 #include "test_runner.h"
-
+#include "student.h"
 #include <string>
 #include <vector>
 #include <list>
@@ -14,6 +14,11 @@
 #include <numeric>
 #include <iterator>
 #include <algorithm>
+#include <random>
+
+random_device rd;
+mt19937 gen(rd());
+uniform_real_distribution<> dis(1.0, 10.0);
 
 template<typename ForwardIterator, typename UnaryPredicate>
 ForwardIterator max_element_if(ForwardIterator first, ForwardIterator last, UnaryPredicate pred) {
@@ -194,5 +199,47 @@ private:
     size_t n, m;
 };
 
+
+char get_rand_char() {
+  static string charset("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
+  return charset[rand() % charset.size()];
+}
+
+
+string generate_random_string(size_t n) {
+  char rbuf[n];
+  generate(rbuf, rbuf+n, &get_rand_char);
+  return string(rbuf, n);
+}
+
+
+bool Compare(const Student& first, const Student& second) {
+  return first.Less(second);
+}
+
+
+Student generate_student() {
+  double algorithms_mark =  dis(gen);
+  double cpp_mark =  dis(gen);
+
+  Student s;
+  s.first_name = generate_random_string(100);
+  s.last_name = generate_random_string(150);
+  s.marks = {{"c++", cpp_mark}, {"algorithms", algorithms_mark}};
+  s.rating = (algorithms_mark + cpp_mark) / 2.0;
+
+  return s;
+}
+
+
+vector<Student> generate_students(int num) {
+  vector<Student> students(num);
+
+  for (int i = 0; i < num; i++) {
+    students.push_back(generate_student());
+  }
+
+  return students;
+}
 
 #endif //RED_BELT_C___SOLUTIONS_H
