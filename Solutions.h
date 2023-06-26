@@ -260,4 +260,89 @@ public:
   }
 };
 
+
+class RouteManager {
+public:
+
+  void AddRoute(int start, int finish) {
+    reachable_lists_[start].insert(finish);
+    reachable_lists_[finish].insert(start);
+  }
+
+  int FindNearestFinish(int start, int finish) const {
+    int result = abs(start - finish);
+    if (reachable_lists_.count(start) < 1) {
+      return result;
+    }
+
+    const set<int>& v = reachable_lists_.at(start);
+    auto res_it = v.lower_bound(finish);
+
+    if (res_it != v.end()) {
+      if (*res_it == finish) {
+        return 0;
+      } else if (res_it != v.begin()) {
+        int upper_dist = abs(*res_it - finish);
+        int lower_dist = abs(*prev(res_it) - finish);
+        return min(upper_dist, lower_dist);
+      } else {
+        return min(abs(*res_it - finish), abs(start - finish));
+      }
+    } else {
+      res_it = prev(res_it);
+      return min(abs(*res_it - finish), abs(start - finish));
+    }
+  }
+
+private:
+
+  map<int, set<int>> reachable_lists_;
+
+};
+
+class RouteManagerAuthors {
+public:
+  void AddRoute(int start, int finish) {
+    reachable_lists_[start].insert(finish);
+    reachable_lists_[finish].insert(start);
+  }
+  int FindNearestFinish(int start, int finish) const {
+    int result = abs(start - finish);
+    if (reachable_lists_.count(start) < 1) {
+      return result;
+    }
+    const set<int>& reachable_stations = reachable_lists_.at(start);
+    const auto finish_pos = reachable_stations.lower_bound(finish);
+    if (finish_pos != end(reachable_stations)) {
+      result = min(result, abs(finish - *finish_pos));
+    }
+    if (finish_pos != begin(reachable_stations)) {
+      result = min(result, abs(finish - *prev(finish_pos)));
+    }
+    return result;
+  }
+private:
+  map<int, set<int>> reachable_lists_;
+};
+
+void rout_manager_main() {
+  RouteManager routes;
+
+  int query_count;
+  cin >> query_count;
+
+  for (int query_id = 0; query_id < query_count; ++query_id) {
+    string query_type;
+    cin >> query_type;
+    int start, finish;
+    cin >> start >> finish;
+    if (query_type == "ADD") {
+      routes.AddRoute(start, finish);
+    } else if (query_type == "GO") {
+      cout << routes.FindNearestFinish(start, finish) << "\n";
+    }
+  }
+
+}
+
 #endif //RED_BELT_C___SOLUTIONS_H
