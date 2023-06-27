@@ -102,7 +102,7 @@ private:
   vector<int> user_page_counts_;
   vector<int> sorted_users_;
   vector<int> user_positions_;
-  map<int, int> user_to_page;
+  vector<int> user_to_page;
   vector<int> page_to_users;
 
   int GetUserCount() const {
