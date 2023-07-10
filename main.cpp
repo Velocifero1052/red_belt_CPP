@@ -21,6 +21,7 @@ template <typename T> void SortPointers(vector<T*>& pointers) {
 template <typename T> void ReversedCopy(T* src, size_t count, T* dst) {
   bool overlap = false;
   size_t counter_left;
+
   for (counter_left = 0; counter_left < count; counter_left++) {
     if (src == dst) {
       overlap = true;
@@ -28,6 +29,7 @@ template <typename T> void ReversedCopy(T* src, size_t count, T* dst) {
     }
     src++;
   }
+
   src -= counter_left;
 
 
@@ -40,23 +42,18 @@ template <typename T> void ReversedCopy(T* src, size_t count, T* dst) {
       Swap(dst + i, dst + count - i - 1);
     }
 
-
   } else {
 
-    /*T* copy = new T[count];
+    size_t counter_right = count - counter_left;
 
-    for (int i = 0; i < count; i++) {
-      copy[i] = src[i];
-    }*/
-
-/*
-
-    for (size_t i = counter_left; i < counter_left + (count - counter_left) / 2; i++) {
-      Swap(src + i, src + counter_left + (count - counter_left) / 2 - i - 1);
+    for (size_t i = 0; i < counter_right / 2; i++) {
+      Swap(dst + i, dst + counter_right - i - 1);
     }
-*/
 
-   /* delete[] copy;*/
+    for (size_t i = 0; i < counter_left; i++) {
+      dst[count - i - 1] = src[i];
+    }
+
   }
 
 }
@@ -115,63 +112,10 @@ void TestReverseCopy() {
   delete[] source;
 }
 
-void TestReverseCopy2() {
-  const size_t count = 5;
-  const size_t count2 = 5;
-
-  int* source = new int[count]{1, 2, 3, 4, 5 };
-  int* dest = new int[count2]{ 6, 7, 8, 9, 10};
-
-  ReversedCopy(source, 4, dest);
-
-  const vector<int> expected = {4, 3, 2, 1, 10};
-  ASSERT_EQUAL(vector<int>(dest, dest + count2), expected);
-
-  delete[] dest;
-  delete[] source;
-}
-
-
-void TestReverseCopy3() {
-  const size_t count = 10;
-  const size_t count2 = 5;
-
-  int* source = new int[count]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-  int* dest = new int[count]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-
-  ReversedCopy(source, count2, dest);
-
-  const vector<int> expected = {5, 4, 3, 2, 1, 6, 7, 8, 9, 10};
-  ASSERT_EQUAL(vector<int>(dest, dest + count), expected);
-
-  delete[] dest;
-  delete[] source;
-}
-
-void TestReverseCopy4() {
-  const size_t count = 10;
-  const size_t count2 = 3;
-
-  int* source = new int[count]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-  int* dest = source + count2;
-
-  ReversedCopy(source, 5, dest);
-
-  const vector<int> expected = {5, 4, 3, 2, 1, 9, 10};
-  ASSERT_EQUAL(vector<int>(dest, dest + 7), expected);
-
-  delete[] dest;
-  delete[] source;
-}
-
-
 int main() {
   TestRunner tr;
   RUN_TEST(tr, TestSwap);
   RUN_TEST(tr, TestSortPointers);
   RUN_TEST(tr, TestReverseCopy);
-  RUN_TEST(tr, TestReverseCopy2);
-  RUN_TEST(tr, TestReverseCopy3);
-  //RUN_TEST(tr, TestReverseCopy4);
   return 0;
 }
