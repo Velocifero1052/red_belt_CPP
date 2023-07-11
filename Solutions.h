@@ -613,4 +613,152 @@ void TestObjectPool() {
   pool.Deallocate(p1);
 }
 
+
+template <typename T> void Swap(T* first, T* second) {
+  T value = *first;
+  *first = *second;
+  *second = value;
+}
+
+template <typename T> void SortPointers(vector<T*>& pointers) {
+  sort(pointers.begin(), pointers.end(), [](T* elemFirst, T* elemSecond) -> bool {
+    return *elemFirst < *elemSecond;
+  });
+}
+
+template <typename T>
+pair<bool, size_t> overlapping(T* src, size_t count, T* dst) {
+  bool overlapping = false;
+  size_t i;
+  for (i = 0; i < count; i++) {
+    if (src == dst) {
+      overlapping = true;
+      break;
+    }
+    src++;
+  }
+  return make_pair(overlapping, i);
+}
+
+template <typename T> void ReversedCopy(T* src, size_t count, T* dst) {
+  pair<bool, size_t> left_overlap_ = overlapping(src, count, dst);
+  pair<bool, size_t> right_overlap_ = overlapping(dst, count, src);
+
+  bool left_overlap = left_overlap_.first;
+  bool right_overlap = right_overlap_.first;
+
+  if (!left_overlap && !right_overlap) {
+
+    for (int i = 0; i < count; i++) {
+      dst[i] = src[count - i - 1];
+    }
+  } else if (left_overlap) {
+
+    size_t counter_left = left_overlap_.second;
+
+    size_t counter_right = count - counter_left;
+
+    for (size_t i = 0; i < counter_right / 2; i++) {
+      Swap(dst + i, dst + counter_right - i - 1);
+    }
+
+    for (size_t i = 0; i < counter_left; i++) {
+      dst[count - i - 1] = src[i];
+    }
+  } else {
+
+    size_t counter_left = right_overlap_.second;
+
+    size_t counter_right = count - counter_left;
+
+    for (size_t i = 0; i < counter_right / 2; i++) {
+      Swap(src + i, src + counter_right - i - 1);
+    }
+
+    for (size_t i = 0; i < counter_left; i++) {
+      dst[i] = src[count - i - 1];
+    }
+
+
+  }
+}
+
+void TestSwap() {
+  int a = 1;
+  int b = 2;
+  Swap(&a, &b);
+  ASSERT_EQUAL(a, 2);
+  ASSERT_EQUAL(b, 1);
+
+  string h = "world";
+  string w = "hello";
+  Swap(&h, &w);
+  ASSERT_EQUAL(h, "hello");
+  ASSERT_EQUAL(w, "world");
+}
+
+void TestSortPointers() {
+  int one = 1;
+  int two = 2;
+  int three = 3;
+
+  vector<int*> pointers;
+  pointers.push_back(&two);
+  pointers.push_back(&three);
+  pointers.push_back(&one);
+
+  SortPointers(pointers);
+
+  ASSERT_EQUAL(pointers.size(), 3u);
+  ASSERT_EQUAL(*pointers[0], 1);
+  ASSERT_EQUAL(*pointers[1], 2);
+  ASSERT_EQUAL(*pointers[2], 3);
+}
+
+void TestReverseCopy() {
+  const size_t count = 7;
+
+  int* source = new int[count];
+  int* dest = new int[count];
+
+  for (size_t i = 0; i < count; ++i) {
+    source[i] = i + 1;
+  }
+  ReversedCopy(source, count, dest);
+  const vector<int> expected1 = {7, 6, 5, 4, 3, 2, 1};
+  ASSERT_EQUAL(vector<int>(dest, dest + count), expected1);
+
+  // Области памяти могут перекрываться
+  ReversedCopy(source, count - 1, source + 1);
+  const vector<int> expected2 = {1, 6, 5, 4, 3, 2, 1};
+  ASSERT_EQUAL(vector<int>(source, source + count), expected2);
+
+  delete[] dest;
+  delete[] source;
+}
+
+
+
+
+void TestReversedCopyOverlappedRight() {
+  const size_t count = 10;
+  const size_t copy_count = 4;
+
+  int* source = new int[count];
+  int* dest = source;
+
+  for (size_t i = 0; i < count; ++i) {
+    source[i] = i + 1;
+  }
+  source += 3;
+
+  ReversedCopy(source, copy_count, dest);
+  const vector<int> expected = {7, 6, 5, 4, 5, 6, 7, 8, 9, 10};
+
+  ASSERT_EQUAL(vector<int>(dest, dest + count), expected);
+  source -= 3;
+  delete[] source;
+}
+
+
 #endif //RED_BELT_C___SOLUTIONS_H
