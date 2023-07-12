@@ -3,4 +3,4 @@ project(red_belt_C__)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(red_belt_C__ main.cpp Solutions.h Logger.h airline_ticket.h deque.h deque_authors.h profile.h student.h template_outputs.h hotel_manager.h)
+add_executable(red_belt_C__ main.cpp headers/Solutions.h headers/Logger.h headers/airline_ticket.h headers/deque.h headers/deque_authors.h headers/profile.h headers/student.h headers/template_outputs.h headers/hotel_manager.h headers/simple_vector.h)
