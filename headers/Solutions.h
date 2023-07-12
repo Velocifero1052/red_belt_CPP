@@ -5,7 +5,7 @@
 #ifndef RED_BELT_C___SOLUTIONS_H
 #define RED_BELT_C___SOLUTIONS_H
 
-#include "test_runner.h"
+#include "../test_runner.h"
 #include "student.h"
 #include <string>
 #include <vector>

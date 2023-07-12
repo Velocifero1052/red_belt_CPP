@@ -5,7 +5,7 @@
 #pragma once
 
 #include <cstdlib>
-#include "test_runner.h"
+#include "../test_runner.h"
 
 template <typename T>
 class SimpleVector {

@@ -4,7 +4,7 @@
 
 #ifndef RED_BELT_C___AIRLINE_TICKET_H
 #define RED_BELT_C___AIRLINE_TICKET_H
-#include "test_runner.h"
+#include "../test_runner.h"
 #pragma once
 
 #include <string>

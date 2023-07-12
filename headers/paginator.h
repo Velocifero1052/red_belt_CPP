@@ -4,7 +4,7 @@
 
 #ifndef RED_BELT_C___PAGINATOR_H
 #define RED_BELT_C___PAGINATOR_H
-#include "test_runner.h"
+#include "../test_runner.h"
 
 #include <numeric>
 #include <iostream>

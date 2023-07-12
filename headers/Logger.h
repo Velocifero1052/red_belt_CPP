@@ -5,7 +5,7 @@
 #ifndef RED_BELT_C___LOGGER_H
 #define RED_BELT_C___LOGGER_H
 
-#include "test_runner.h"
+#include "../test_runner.h"
 #include <sstream>
 
 using namespace std;
