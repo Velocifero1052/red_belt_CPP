@@ -60,6 +60,7 @@ public:
   }
 
   Node* GetHead() { return head; }
+
   const Node* GetHead() const { return head; }
 
 private:
