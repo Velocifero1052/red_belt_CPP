@@ -760,5 +760,39 @@ void TestReversedCopyOverlappedRight() {
   delete[] source;
 }
 
+void sportsmans_task() {
+  int n;
+  cin >> n;
+
+  list<int> sp;
+  vector<list<int>::iterator> positions(100'000'1, sp.end());
+
+  for (int i = 0; i < n; i++) {
+
+    int number, should_stand_after;
+    cin >> number >> should_stand_after;
+
+    if (positions[should_stand_after] == sp.end()) {
+      auto new_element_it = sp.insert(sp.end(), number);
+      positions[number] = new_element_it;
+    } else {
+      auto should_stand_after_it = positions[should_stand_after];
+      auto new_element_it = sp.insert(should_stand_after_it, number);
+      positions[number] = new_element_it;
+    }
+
+  }
+
+  bool first = true;
+  for (const int & it : sp) {
+    if (first) {
+      cout << it;
+      first = false;
+    } else {
+      cout << " " << it;
+    }
+  }
+}
+
 
 #endif //RED_BELT_C___SOLUTIONS_H
