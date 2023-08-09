@@ -1,20 +1,36 @@
-#include <array>
+#include <string>
+#include <iostream>
 #include <string_view>
+#include <map>
 
-using std::array;
-using std::string_view;
+using namespace std;
 
-const size_t SIZE = 10;
 
 int main() {
 
-  array<char, SIZE> a = {'a','a','a','a','a','a','a','a','a','a'};
-  auto s = string_view(a.data(), a.size());
-  auto b = string_view(a.data(), a.size());
-  auto c = string_view(a.data(), a.size());
-  auto d = string_view(a.data(), a.size());
-  auto e =  string_view(a.begin());
-  auto f =  string_view(&a[0], a.size());
+/*  Translator t;
+  string source = "source";
+  string target = "target";
+
+  t.Add(source, target);
+
+  cout << t.TranslateForward(source) << endl;*/
+/*
+  map<string, string> m;
+  auto it = m.insert({"hello", "world"});
+
+  cout << "it.second: " << it.second << endl;
+  cout << "key: " << it.first->first << ", value: " << it.first->second << endl;
+
+  it = m.insert_or_assign("hello", "world2");
+
+  cout << "it.second: " << it.second << endl;
+  cout << "key: " << it.first->first << ", value: " << it.first->second << endl;
+
+  cout << "#######################" << endl;
+  for (const auto&[key, value]: m) {
+    cout << key << " " << value << endl;
+  }*/
 
   return 0;
 }
