@@ -11,32 +11,39 @@ using namespace std;
 template <typename TAirport>
 class AirportCounter {
 public:
-  AirportCounter() = default;
+  AirportCounter() {
+    for (size_t i = 0; i < static_cast<size_t>(TAirport::Last_); i++) {
+      items[i].first = static_cast<TAirport>(i);
+      items[i].second = 0;
+    }
+  };
 
   template <typename TIterator>
-  AirportCounter(TIterator begin, TIterator end) {
-    total = distance(begin, end);
-
-  }
+  AirportCounter(TIterator begin, TIterator end): AirportCounter() {
+    for (auto it = begin; it != end; it++) {
+      auto index = static_cast<size_t>(*it);
+      items[index].second++;
+    }
+  };
 
   size_t Get(TAirport airport) const {
-    return 0;
+    return items[static_cast<size_t>(airport)].second;
   }
 
   void Insert(TAirport airport) {
-
+    items[static_cast<size_t>(airport)].second++;
   }
 
   void EraseOne(TAirport airport) {
-
+    items[static_cast<size_t>(airport)].second--;
   }
 
   void EraseAll(TAirport airport) {
-
+    items[static_cast<size_t>(airport)].second = 0;
   }
 
   using Item = pair<TAirport, size_t>;
-  using Items = array<TAirport, 1000>;
+  using Items = array<Item, static_cast<size_t>(TAirport::Last_)>;
 
   Items GetItems() const {
     return items;
@@ -44,7 +51,6 @@ public:
 
 private:
   Items items;
-  size_t total;
 };
 
 void TestMoscow();
@@ -84,13 +90,13 @@ int main() {
   TestRunner tr;
   LOG_DURATION("Total tests duration");
   RUN_TEST(tr, TestMoscow);
-  //RUN_TEST(tr, TestManyConstructions);
-  //RUN_TEST(tr, TestManyGetItems);
-  //RUN_TEST(tr, TestMostPopularAirport);
+  RUN_TEST(tr, TestManyConstructions);
+  RUN_TEST(tr, TestManyGetItems);
+  RUN_TEST(tr, TestMostPopularAirport);
   return 0;
 }
 
-/*void TestMoscow() {
+void TestMoscow() {
   enum class MoscowAirport {
     VKO,
     SVO,
@@ -138,7 +144,7 @@ int main() {
 
   airport_counter.EraseAll(MoscowAirport::VKO);
   ASSERT_EQUAL(airport_counter.Get(MoscowAirport::VKO), 0);
-}*/
+}
 
 void TestManyConstructions() {
   default_random_engine rnd(20180623);
@@ -160,30 +166,29 @@ void TestManyConstructions() {
   ASSERT(total < 1000);
 }
 
-//void TestManyGetItems() {
-//  default_random_engine rnd(20180701);
-//  uniform_int_distribution<size_t> gen_airport(
-//      0, static_cast<size_t>(SmallTownAirports::Last_) - 1
-//  );
-//
-//  array<SmallTownAirports, 2> airports;
-//  for (auto& x : airports) {
-//    x = static_cast<SmallTownAirports>(gen_airport(rnd));
-//  }
-//
-//  uint64_t total = 0;
-//  for (int step = 0; step < 100'000'000; ++step) {
-//    AirportCounter<SmallTownAirports> counter(begin(airports), end(airports));
-//    total += counter.Get(SmallTownAirports::Airport_1);
-//    for (const auto [airport, count] : counter.GetItems()) {
-//      total += count;
-//    }
-//  }
-//  // Assert to use variable total so that compiler doesn't optimize it out
-//  ASSERT(total > 0);
-//}
+void TestManyGetItems() {
+  default_random_engine rnd(20180701);
+  uniform_int_distribution<size_t> gen_airport(
+      0, static_cast<size_t>(SmallTownAirports::Last_) - 1
+  );
 
-/*
+  array<SmallTownAirports, 2> airports;
+  for (auto &x: airports) {
+    x = static_cast<SmallTownAirports>(gen_airport(rnd));
+  }
+
+  uint64_t total = 0;
+  for (int step = 0; step < 100'000'000; ++step) {
+    AirportCounter<SmallTownAirports> counter(begin(airports), end(airports));
+    total += counter.Get(SmallTownAirports::Airport_1);
+    for (const auto [airport, count]: counter.GetItems()) {
+      total += count;
+    }
+  }
+  // Assert to use variable total so that compiler doesn't optimize it out
+  ASSERT(total > 0);
+}
+
 void TestMostPopularAirport() {
   default_random_engine rnd(20180624);
   uniform_int_distribution<size_t> gen_airport(
@@ -218,4 +223,4 @@ void TestMostPopularAirport() {
   ASSERT(all_of(begin(most_popular), end(most_popular), [&](SmallCountryAirports a) {
     return a == most_popular.front();
   }));
-}*/
+}
