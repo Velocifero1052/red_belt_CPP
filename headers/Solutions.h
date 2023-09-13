@@ -15,6 +15,7 @@
 #include <iterator>
 #include <algorithm>
 #include <random>
+#include <queue>
 #include <iomanip>
 
 random_device rd;
@@ -736,9 +737,6 @@ void TestReverseCopy() {
   delete[] dest;
   delete[] source;
 }
-
-
-
 
 void TestReversedCopyOverlappedRight() {
   const size_t count = 10;
