@@ -33,6 +33,7 @@ void Stats::AddUri(std::string_view uri) {
 [[nodiscard]] const std::map<std::string_view, int>& Stats::GetMethodStats() const {
   return method_stats;
 }
+
 [[nodiscard]] const std::map<std::string_view, int>& Stats::GetUriStats() const {
   return uri_stats;
 }

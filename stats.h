@@ -15,8 +15,8 @@ public:
   [[nodiscard]] const std::map<std::string_view, int>& GetMethodStats() const;
   [[nodiscard]] const std::map<std::string_view, int>& GetUriStats() const;
 private:
-  map<std::string_view, int> method_stats;
-  map<std::string_view, int> uri_stats;
+  std::map<std::string_view, int> method_stats;
+  std::map<std::string_view, int> uri_stats;
 };
 
 HttpRequest ParseRequest(std::string_view line);
