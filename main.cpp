@@ -41,16 +41,14 @@ void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) 
 }*/
 
 template <typename RandomIt>
-void MakeJosephusPermutationV2(RandomIt first, RandomIt last, uint32_t step_size) {
-  size_t dist = distance(first, last);
-  for (auto it = first;;) {
-
-
-    if (distance(first, it + step_size) > dist) {
-
-    } else {
-
-    }
+void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
+  auto size = distance(first, last);
+  size_t cur_pos = 0;
+  while(size > 1) {
+    auto it = first + cur_pos;
+    remove(it);
+    size = distance(first, last);
+    cur_pos = (cur_pos + step_size - 1) % size;
   }
 }
 
@@ -99,19 +97,24 @@ void TestAvoidsCopying() {
 int main() {
 
   vector<int> v{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-  auto init_size = distance(v.begin(), v.end());
+  auto size = distance(v.begin(), v.end());
   auto first = v.begin();
   auto last = v.end();
   size_t step_size = 2;
   auto current = first;
 
-  while (distance(first, current + step_size) <= init_size) {
+  size_t cur_pos = 0;
+  while (v.size() > 1) {
+    auto element_to_remove = v.begin() + cur_pos;
+    cout << "Vector: " << v << endl;
+    cout << "Element to remove: " << *element_to_remove << endl;
+    v.erase(element_to_remove);
+    cout << "Updated vector: " << v << endl;
 
-    cout << *current << endl;
-
-    current += step_size;
+    cur_pos = (cur_pos + step_size - 1) % v.size();
   }
 
+  cout << v << endl;
 
 
   return 0;
