@@ -1,10 +1,9 @@
 #include "test_runner.h"
 
-#include <cstdint>
 #include <iterator>
 #include <numeric>
 #include <vector>
-#include <queue>
+#include <list>
 
 using namespace std;
 
@@ -94,8 +93,16 @@ void TestAvoidsCopying() {
 }
 */
 
-int main() {
+template <typename RandomIt>
+void SwapListElements(list<int>& list, RandomIt iterator1, RandomIt iterator2) {
 
+
+
+}
+
+
+int main() {
+/*
   vector<int> v{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
   auto size = distance(v.begin(), v.end());
   auto first = v.begin();
@@ -114,7 +121,20 @@ int main() {
     cur_pos = (cur_pos + step_size - 1) % v.size();
   }
 
-  cout << v << endl;
+  cout << v << endl;*/
+
+  list<int> l = {1, 2, 3, 4, 5, 6, 7, 8};
+  auto it = l.begin();
+  auto it2 = l.begin();
+
+  advance(it, 2);
+  advance(it2, 3);
+
+  int& it_ref = *it;
+  int& it2_ref = *it2;
+
+  cout << it_ref << endl;
+  cout << it2_ref << endl;
 
 
   return 0;
