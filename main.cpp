@@ -100,9 +100,15 @@ void SwapListElements(list<int>& list, RandomIt iterator1, RandomIt iterator2) {
 
 }
 
+void printList(const list<int>& l) {
+  for (int item: l) {
+    cout << item << " ";
+  }
+}
+
 
 int main() {
-/*
+  /*
   vector<int> v{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
   auto size = distance(v.begin(), v.end());
   auto first = v.begin();
@@ -123,19 +129,31 @@ int main() {
 
   cout << v << endl;*/
 
-  list<int> l = {1, 2, 3, 4, 5, 6, 7, 8};
-  auto it = l.begin();
-  auto it2 = l.begin();
+  std::list<int> list1 = {1, 2, 3, 4, 5};
+  std::list<int> list2 = {};
+
+  auto it = list1.begin();
+  auto it2 = list1.begin();
 
   advance(it, 2);
   advance(it2, 3);
 
-  int& it_ref = *it;
-  int& it2_ref = *it2;
+  cout << *it << endl;
+  cout << *it2 << endl;
 
-  cout << it_ref << endl;
-  cout << it2_ref << endl;
+  //list1.splice(list1.end(), list2);
 
+  list1.splice(it, list2);
+
+  cout << "List1: ";
+  printList(list1);
+  cout << endl;
+
+  cout << "List2: ";
+  printList(list2);
+  cout << endl;
+  cout << *it << endl;
+  cout << *it2 << endl;
 
   return 0;
 }
