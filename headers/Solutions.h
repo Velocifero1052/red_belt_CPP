@@ -792,5 +792,12 @@ void sportsmans_task() {
   }
 }
 
+template <typename T>
+void SwapListElements(std::list<T>& list_, typename std::list<T>::iterator it1,
+                      typename std::list<T>::iterator it2) {
+  const auto iterator2_next = next(it2);
+  list_.splice(it1, list_, it2);
+  list_.splice(iterator2_next, list_, it1);
+}
 
 #endif //RED_BELT_C___SOLUTIONS_H

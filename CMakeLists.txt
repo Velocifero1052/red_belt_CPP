@@ -8,4 +8,5 @@ add_executable(red_belt_C__ main.cpp headers/Solutions.h headers/Logger.h header
         headers/TextEditor.h
         http_request.h
         stats.h
-        stats.cpp)
+        stats.cpp
+        headers/joseph_permutation.h)
