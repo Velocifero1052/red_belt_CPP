@@ -21,13 +21,18 @@ template <typename RandomIt>
 void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
   vector<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
   size_t cur_pos = 0;
+  size_t prev_pos;
+  auto element_to_remove = pool.begin();
   while (!pool.empty()) {
     *(first++) = std::move(pool[cur_pos]);
-    auto element_to_remove = pool.begin() + cur_pos;
+
+    (prev_pos < cur_pos) ? element_to_remove += step_size - 1 : element_to_remove = pool.begin() + cur_pos;
+
     pool.erase(element_to_remove);
     if (pool.empty()) {
       break;
     }
+    prev_pos = cur_pos;
     cur_pos = (cur_pos + step_size - 1) % pool.size();
   }
 }
@@ -85,6 +90,5 @@ int main() {
   TestRunner tr;
   RUN_TEST(tr, TestIntVector);
   RUN_TEST(tr, TestAvoidsCopying);
-
   return 0;
 }
