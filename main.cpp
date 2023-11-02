@@ -4,6 +4,7 @@
 #include <numeric>
 #include <vector>
 #include <utility>
+#include <list>
 
 using namespace std;
 
@@ -18,7 +19,7 @@ struct NoncopyableInt {
 };
 
 template <typename RandomIt>
-void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
+void MakeJosephusPermutation_(RandomIt first, RandomIt last, uint32_t step_size) {
   vector<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
   size_t cur_pos = 0;
   size_t prev_pos;
@@ -27,6 +28,33 @@ void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) 
     *(first++) = std::move(pool[cur_pos]);
 
     (prev_pos < cur_pos) ? element_to_remove += step_size - 1 : element_to_remove = pool.begin() + cur_pos;
+
+    pool.erase(element_to_remove);
+    if (pool.empty()) {
+      break;
+    }
+    prev_pos = cur_pos;
+    cur_pos = (cur_pos + step_size - 1) % pool.size();
+  }
+}
+
+template <typename RandomIt>
+void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
+  list<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
+  size_t cur_pos = 0;
+  size_t prev_pos;
+  auto element_to_remove = pool.begin();
+  while (!pool.empty()) {
+    auto it = pool.begin();
+    advance(it, cur_pos);
+    *(first++) = std::move(*it);
+
+    if (prev_pos < cur_pos) {
+      advance(element_to_remove, step_size - 1);
+    } else {
+      element_to_remove = pool.begin();
+      advance(element_to_remove, cur_pos);
+    }
 
     pool.erase(element_to_remove);
     if (pool.empty()) {
