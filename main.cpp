@@ -3,6 +3,7 @@
 #include <iterator>
 #include <numeric>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -30,12 +31,6 @@ void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) 
 //    cur_pos = (cur_pos + step_size - 1) % pool.size();
 //  }
 }
-
-template <typename RandomIt>
-void make_joseph_permutation(RandomIt first, RandomIt last, uint32_t step_size) {
-
-}
-
 
 vector<int> MakeTestVector() {
   vector<int> numbers(10);
@@ -93,6 +88,23 @@ void TestAvoidsCopying() {
   ASSERT_EQUAL(numbers, expected);
 }
 
+template <typename RandomIt>
+void make_joseph_permutation(RandomIt first, RandomIt last, uint32_t step_size) {
+  auto size = distance(first, last);
+  auto element_to_remove = first + step_size;
+  size_t cur_pos = 0;
+
+  while (size > 1) {
+    auto element_to_remove = first + cur_pos;
+    auto it = remove(first, last, *element_to_remove);
+    last = it;
+    cur_pos = (cur_pos + step_size - 1) % size;
+    size--;
+  }
+
+}
+
+
 int main() {
 
   vector<int> v{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
@@ -103,17 +115,46 @@ int main() {
   auto current = first;
 
   size_t cur_pos = 0;
-  while (v.size() > 1) {
+  while (size > 1) {
     auto element_to_remove = v.begin() + cur_pos;
     cout << "Vector: " << v << endl;
     cout << "Element to remove: " << *element_to_remove << endl;
-    v.erase(element_to_remove);
+    //v.erase(element_to_remove);
+    auto res = remove(v.begin(), v.end(), *element_to_remove);
+    v.erase(res, v.end());
+    size--;
     cout << "Updated vector: " << v << endl;
 
     cur_pos = (cur_pos + step_size - 1) % v.size();
   }
 
   cout << v << endl;
+
+  cout << "################################" << endl;
+
+  vector<int> v2{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+  cout << "Initial second vector: " << v2 << endl;
+  make_joseph_permutation(v2.begin(), v2.end(), 0);
+  cout << "After permutation: " << v2;
+
+  cout << "#################################" << endl;
+
+  v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+// Create an iterator to the element to be removed.
+  auto it = std::find(v.begin(), v.end(), 5);
+
+// Remove the element from the vector.
+  cout << v << endl;
+  it = std::remove(v.begin(), v.end(), *it);
+  cout << v << endl;
+// Erase the unused elements from the vector.
+  v.erase(it, v.end());
+
+// Print the remaining elements of the vector.
+  for (auto& element : v) {
+    std::cout << element << " ";
+  }
 
   /*Initial tests
   TestRunner tr;
