@@ -80,6 +80,8 @@ struct Node {
   }
 };
 
+
+
 template <typename RandomIt>
 void MakeJosephusPermutationCustomList(RandomIt first, RandomIt last, uint32_t step_size) {
 
@@ -95,18 +97,20 @@ void MakeJosephusPermutationCustomList(RandomIt first, RandomIt last, uint32_t s
 
   for (int i = 1; i < size; i++) {
     auto* new_node = new Node<typename RandomIt::value_type>();
-    new_node->item = *(first + i);
+    new_node->item = std::move(*(first + i));
     new_node->next = nullptr;
 
     currentNode->next = new_node;
     currentNode = new_node;
   }
-  cout << "#######################" << endl;
+
+  currentNode->next = head;
+  /*cout << "#######################" << endl;
   while (head != nullptr) {
     cout << head->item << " ";
     head = head->next;
   }
-  cout << "\n########################" << endl;
+  cout << "\n########################" << endl;*/
 
 }
 
