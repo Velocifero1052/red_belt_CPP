@@ -19,7 +19,7 @@ struct NoncopyableInt {
 };
 
 template <typename RandomIt>
-void MakeJosephusPermutation_(RandomIt first, RandomIt last, uint32_t step_size) {
+void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
   vector<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
   size_t cur_pos = 0;
   size_t prev_pos;
@@ -38,35 +38,6 @@ void MakeJosephusPermutation_(RandomIt first, RandomIt last, uint32_t step_size)
   }
 }
 
-template <typename RandomIt>
-void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
-  list<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
-  size_t cur_pos = 0;
-  size_t prev_pos;
-  auto element_to_remove = pool.begin();
-  while (!pool.empty()) {
-
-    auto it = pool.begin();
-    advance(it, cur_pos);
-
-    *(first++) = std::move(*it);
-
-    if (prev_pos < cur_pos) {
-      advance(element_to_remove, step_size - 1);
-    } else {
-      element_to_remove = pool.begin();
-      advance(element_to_remove, cur_pos);
-    }
-
-    pool.erase(element_to_remove);
-    if (pool.empty()) break;
-
-    prev_pos = cur_pos;
-    cur_pos = (cur_pos + step_size - 1) % pool.size();
-  }
-
-}
-
 template <typename T>
 struct Node {
   T item;
@@ -79,8 +50,6 @@ struct Node {
     next = nullptr;
   }
 };
-
-
 
 template <typename RandomIt>
 void MakeJosephusPermutationCustomList(RandomIt first, RandomIt last, uint32_t step_size) {
@@ -106,12 +75,6 @@ void MakeJosephusPermutationCustomList(RandomIt first, RandomIt last, uint32_t s
 
   currentNode->next = head;
 
-
-  while (current_node != current_node->next) {
-    for (int i = 1; i < step_size; i++) current_node = current_node->next;
-    current_node->next = current_node->next->next;
-  }
-  cout << current_node->item << endl;
 
 }
 
@@ -163,52 +126,15 @@ void TestAvoidsCopying() {
   ASSERT_EQUAL(numbers, expected);
 }
 
-struct Node_ {
-  int value;
-  Node_* next;
-};
-
-Node_* create_singly_linked_list(const std::vector<int>& vec) {
-  // Create a new head node for the linked list.
-  Node_* head = new Node_();
-  head->value = vec[0];
-  head->next = nullptr;
-
-  // Iterate over the vector and add each element to the linked list.
-  Node_* current_node = head;
-  for (int i = 1; i < vec.size(); i++) {
-    Node_* new_node = new Node_();
-    new_node->value = vec[i];
-    new_node->next = nullptr;
-
-    current_node->next = new_node;
-    current_node = new_node;
-  }
-
-  return head;
-}
-
-
 int main() {
-/*  TestRunner tr;
+
+  TestRunner tr;
   RUN_TEST(tr, TestIntVector);
-  RUN_TEST(tr, TestAvoidsCopying);*/
+  RUN_TEST(tr, TestAvoidsCopying);
 
-  std::vector<int> vec = {1, 2, 3, 4, 5};
+  /*std::vector<int> vec = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-// Create a singly linked list from the vector.
-  Node_* head = create_singly_linked_list(vec);
-
-// Print the elements of the linked list.
-  Node_* current_node = head;
-  while (current_node != nullptr) {
-    std::cout << current_node->value << " ";
-    current_node = current_node->next;
-  }
-
-  std::cout << std::endl;
-
-  MakeJosephusPermutationCustomList(vec.begin(), vec.end(), 1);
+  MakeJosephusPermutationCustomList(vec.begin(), vec.end(), 1);*/
 
   return 0;
 }
