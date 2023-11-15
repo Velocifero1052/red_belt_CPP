@@ -19,7 +19,7 @@ struct NoncopyableInt {
 };
 
 template <typename RandomIt>
-void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
+void MakeJosephusPermutation2(RandomIt first, RandomIt last, uint32_t step_size) {
   vector<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
   size_t cur_pos = 0;
   size_t prev_pos;
@@ -42,39 +42,27 @@ template <typename T>
 struct Node {
   T item;
   Node* next;
-  Node(T x, Node* t) {
-    item = x;
-    next = t;
-  }
-  Node() {
-    next = nullptr;
-  }
+  Node(T x, Node* t): item(std::move(x)), next(t) {}
 };
 
 template <typename RandomIt>
-void MakeJosephusPermutationCustomList(RandomIt first, RandomIt last, uint32_t step_size) {
+void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
 
   auto size = distance(first, last);
   if (size == 0 || size == 1)
     return;
 
-  auto *head = new Node<typename RandomIt::value_type>();
-  head->item = *first;
-  head->next = nullptr;
+  auto *head = new Node<typename RandomIt::value_type>(std::move(*first), nullptr);
 
   auto currentNode = head;
 
   for (int i = 1; i < size; i++) {
-    auto* new_node = new Node<typename RandomIt::value_type>();
-    new_node->item = std::move(*(first + i));
-    new_node->next = nullptr;
-
+    auto* new_node = new Node<typename RandomIt::value_type>(std::move(*(first + i)), nullptr);
     currentNode->next = new_node;
     currentNode = new_node;
   }
 
   currentNode->next = head;
-
 
 }
 
