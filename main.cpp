@@ -4,7 +4,6 @@
 #include <numeric>
 #include <vector>
 #include <utility>
-#include <list>
 
 using namespace std;
 
@@ -19,7 +18,7 @@ struct NoncopyableInt {
 };
 
 template <typename RandomIt>
-void MakeJosephusPermutation2(RandomIt first, RandomIt last, uint32_t step_size) {
+void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
   vector<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
   size_t cur_pos = 0;
   size_t prev_pos;
@@ -46,7 +45,7 @@ struct Node {
 };
 
 template <typename RandomIt>
-void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
+void MakeJosephusPermutation2(RandomIt first, RandomIt last, uint32_t step_size) {
 
   auto size = distance(first, last);
   if (size == 0 || size == 1)
@@ -63,8 +62,13 @@ void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) 
   }
 
   currentNode->next = head;
+}
+
+template <typename RandomIt>
+void MakeJosephusPermutation3(RandomIt first, RandomIt last, uint32_t step_size) {
 
 }
+
 
 vector<int> MakeTestVector() {
   vector<int> numbers(10);
