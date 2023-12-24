@@ -69,7 +69,6 @@ void MakeJosephusPermutation3(RandomIt first, RandomIt last, uint32_t step_size)
 
 }
 
-
 vector<int> MakeTestVector() {
   vector<int> numbers(10);
   iota(begin(numbers), end(numbers), 0);
@@ -123,10 +122,6 @@ int main() {
   TestRunner tr;
   RUN_TEST(tr, TestIntVector);
   RUN_TEST(tr, TestAvoidsCopying);
-
-  /*std::vector<int> vec = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-
-  MakeJosephusPermutationCustomList(vec.begin(), vec.end(), 1);*/
 
   return 0;
 }
