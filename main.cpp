@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include <utility>
+
 #include <algorithm>
 
 using namespace std;
@@ -31,7 +32,6 @@ void print_list(const list<int> &l) {
   }
 }
 
-
 vector<int> MakeTestVector();
 
 void TestIntVector();
@@ -45,11 +45,33 @@ void MakeJosephusPermutation2(RandomIt first, RandomIt last, uint32_t step_size)
 
 void TestAvoidsCopying();
 
+
 int main() {
-  vector<int> v{1, 2, 3, 4, 5};
-  MakeJosephusPermutation2(v.begin(), v.end(), 2);
+
+  vector<int> v{1, 2, 3, 4, 5, 6, 7};
+  MakeJosephusPermutation2(v.begin(), v.end(), 3);
+  cout << v << endl;
 
   return 0;
+}
+
+
+template<typename RandomIt>
+void MakeJosephusPermutation2(RandomIt first, RandomIt last, uint32_t step_size) {
+
+  list<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
+  size_t cur_pos = 0;
+  size_t prev_pos;
+  auto element_to_remove = pool.begin();
+
+  while (!pool.empty()) {
+    auto cur_size = pool.size();
+    advance(element_to_remove, step_size - 1);
+
+
+  }
+
+
 }
 
 void TestIntVector() {
@@ -90,25 +112,7 @@ ostream &operator<<(ostream &os, const NoncopyableInt &v) {
   return os << v.value;
 }
 
-template<typename RandomIt>
-void MakeJosephusPermutation2(RandomIt first, RandomIt last, uint32_t step_size) {
 
-  list<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
-
-  size_t cur_pos = 0;
-  size_t prev_pos;
-  auto element_to_remove = pool.begin();
-
-  while (!pool.empty()) {
-    auto curr = element_to_remove;
-    cout << " " << *curr << endl;
-    pool.erase(curr);
-    advance(element_to_remove, 1);
-  }
-
-
-
-}
 
 void TestAvoidsCopying() {
   vector<NoncopyableInt> numbers;
