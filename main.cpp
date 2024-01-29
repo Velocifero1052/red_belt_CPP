@@ -3,75 +3,59 @@
 #include <iterator>
 #include <numeric>
 #include <vector>
-#include <list>
-#include <utility>
-
-#include <algorithm>
 
 using namespace std;
 
-struct NoncopyableInt {
-  int value;
-
-  NoncopyableInt(const NoncopyableInt &) = delete;
-
-  NoncopyableInt &operator=(const NoncopyableInt &) = delete;
-
-  NoncopyableInt(NoncopyableInt &&) = default;
-
-  NoncopyableInt &operator=(NoncopyableInt &&) = default;
+template <typename T>
+struct Node {
+  T item;
+  Node<T>* next;
+  Node(const T& item_, Node<T>* t): item(item_), next(t) {}
 };
 
-template<typename RandomIt>
-void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size);
 
-void print_list(const list<int> &l) {
-  for (auto it = l.begin(); it != l.end(); ) {
-    cout << *it << " ";
-    advance(it, 1);
+template <typename RandomIt>
+void MakeJosephusPermutationV1(RandomIt first, RandomIt last, uint32_t step_size) {
+  typedef Node<typename RandomIt::value_type>* link;
+  link t;
+
+  t = new Node<typename RandomIt::value_type>(*first, nullptr);
+  t->next = t;
+  link x = t;
+
+  for (auto it = first + 1; it != last; it++) {
+    x = (x->next = new Node<typename RandomIt::value_type>(*it, t));
   }
-}
 
-vector<int> MakeTestVector();
-
-void TestIntVector();
-
-bool operator==(const NoncopyableInt &lhs, const NoncopyableInt &rhs);
-
-ostream &operator<<(ostream &os, const NoncopyableInt &v);
-
-template<typename RandomIt>
-void MakeJosephusPermutation2(RandomIt first, RandomIt last, uint32_t step_size);
-
-void TestAvoidsCopying();
-
-
-int main() {
-
-  vector<int> v{1, 2, 3, 4, 5, 6, 7};
-  MakeJosephusPermutation2(v.begin(), v.end(), 3);
-  cout << v << endl;
-
-  return 0;
+  while (x != x->next) {
+    for (int i = 1; i < step_size; i++) {
+      x = x->next;
+    }
+    x->next = x->next->next;
+  }
+  cout << x->item << endl;
 }
 
 
-template<typename RandomIt>
-void MakeJosephusPermutation2(RandomIt first, RandomIt last, uint32_t step_size) {
 
-  list<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
+template <typename RandomIt>
+void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
+  vector<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
   size_t cur_pos = 0;
-  size_t prev_pos;
-  auto element_to_remove = pool.begin();
-
   while (!pool.empty()) {
-    auto cur_size = pool.size();
-    advance(element_to_remove, step_size - 1);
-
-
+    *(first++) = std::move(pool[cur_pos]);
+    pool.erase(pool.begin() + cur_pos);
+    if (pool.empty()) {
+      break;
+    }
+    cur_pos = (cur_pos + step_size - 1) % pool.size();
   }
+}
 
-
+vector<int> MakeTestVector() {
+  vector<int> numbers(10);
+  iota(begin(numbers), end(numbers), 0);
+  return numbers;
 }
 
 void TestIntVector() {
@@ -88,31 +72,29 @@ void TestIntVector() {
   }
 }
 
-bool operator==(const NoncopyableInt &lhs, const NoncopyableInt &rhs) {
+// Это специальный тип, который поможет вам убедиться, что ваша реализация
+// функции MakeJosephusPermutation не выполняет копирование объектов.
+// Сейчас вы, возможно, не понимаете как он устроен, однако мы расскажем,
+// почему он устроен именно так, далее в блоке про move-семантику —
+// в видео «Некопируемые типы»
+
+struct NoncopyableInt {
+  int value;
+
+  NoncopyableInt(const NoncopyableInt&) = delete;
+  NoncopyableInt& operator=(const NoncopyableInt&) = delete;
+
+  NoncopyableInt(NoncopyableInt&&) = default;
+  NoncopyableInt& operator=(NoncopyableInt&&) = default;
+};
+
+bool operator == (const NoncopyableInt& lhs, const NoncopyableInt& rhs) {
   return lhs.value == rhs.value;
 }
 
-template<typename RandomIt>
-void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
-  vector<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
-  size_t cur_pos = 0;
-  size_t prev_pos;
-  auto element_to_remove = pool.begin();
-  while (!pool.empty()) {
-    *(first++) = std::move(pool[cur_pos]);
-    (prev_pos < cur_pos) ? element_to_remove += step_size - 1 : element_to_remove = pool.begin() + cur_pos;
-    pool.erase(element_to_remove);
-    if (pool.empty()) break;
-    prev_pos = cur_pos;
-    cur_pos = (cur_pos + step_size - 1) % pool.size();
-  }
-}
-
-ostream &operator<<(ostream &os, const NoncopyableInt &v) {
+ostream& operator << (ostream& os, const NoncopyableInt& v) {
   return os << v.value;
 }
-
-
 
 void TestAvoidsCopying() {
   vector<NoncopyableInt> numbers;
@@ -134,8 +116,14 @@ void TestAvoidsCopying() {
   ASSERT_EQUAL(numbers, expected);
 }
 
-vector<int> MakeTestVector() {
-  vector<int> numbers(10);
-  iota(begin(numbers), end(numbers), 0);
-  return numbers;
+int main() {
+  /*TestRunner tr;
+  RUN_TEST(tr, TestIntVector);
+  RUN_TEST(tr, TestAvoidsCopying);*/
+  vector<int> v{1,2,3,4,5,6,7,8,9};
+  size_t step_size = 5;
+
+  MakeJosephusPermutationV1(v.begin(), v.end(), step_size);
+
+  return 0;
 }
