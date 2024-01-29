@@ -3,6 +3,7 @@
 #include <iterator>
 #include <numeric>
 #include <vector>
+#include <list>
 
 using namespace std;
 
@@ -28,23 +29,63 @@ void MakeJosephusPermutationV1(RandomIt first, RandomIt last, uint32_t step_size
   }
 
   while (x != x->next) {
+    *(first++) = std::move(x->item);
     for (int i = 1; i < step_size; i++) {
       x = x->next;
     }
     x->next = x->next->next;
   }
-  cout << x->item << endl;
+
 }
 
-
-
-template <typename RandomIt>
+template<typename RandomIt>
 void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
-  vector<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
+  list<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
   size_t cur_pos = 0;
   while (!pool.empty()) {
-    *(first++) = std::move(pool[cur_pos]);
-    pool.erase(pool.begin() + cur_pos);
+    auto cur_pos_it = pool.begin();
+    advance(cur_pos_it, cur_pos);
+    *(first++) = std::move(*cur_pos_it);
+    pool.erase(cur_pos_it);
+    if (pool.empty()) {
+      break;
+    }
+    cur_pos = (cur_pos + step_size - 1) % pool.size();
+  }
+}
+
+template<typename RandomIt>
+void MakeJosephusPermutationV3(RandomIt first, RandomIt last, uint32_t step_size) {
+  list<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
+  size_t cur_pos = 0, prev_pos;
+  auto cur_pos_it = pool.begin();
+
+  for (int i = 0; i < 20; i++) {
+
+ /*   if (prev_pos > cur_pos) {
+      cur_pos_it = pool.begin();
+      advance(cur_pos_it, cur_pos);
+    } else {
+
+    }*/
+
+    *(first++) = std::move(*cur_pos_it);
+    pool.erase(cur_pos_it);
+    if (pool.empty()) {
+      break;
+    }
+
+    cur_pos = (cur_pos + step_size - 1) % pool.size();
+  }
+}
+
+template <typename RandomIt>
+void MakeJosephusPermutationV0(RandomIt first, RandomIt last, uint32_t step_size) {
+  vector<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
+    size_t cur_pos = 0;
+    while (!pool.empty()) {
+      *(first++) = std::move(pool[cur_pos]);
+      pool.erase(pool.begin() + cur_pos);
     if (pool.empty()) {
       break;
     }
@@ -113,17 +154,27 @@ void TestAvoidsCopying() {
   expected.push_back({4});
   expected.push_back({2});
 
-  ASSERT_EQUAL(numbers, expected);
+  ASSERT_EQUAL(numbers, expected)
 }
 
 int main() {
-  /*TestRunner tr;
+
+ /* TestRunner tr;
   RUN_TEST(tr, TestIntVector);
   RUN_TEST(tr, TestAvoidsCopying);*/
-  vector<int> v{1,2,3,4,5,6,7,8,9};
+
+  vector<int> v0{1,2,3,4,5,6,7,8,9};
   size_t step_size = 5;
 
-  MakeJosephusPermutationV1(v.begin(), v.end(), step_size);
+  MakeJosephusPermutation(v0.begin(), v0.end(), step_size);
+  cout << "First, textbook example-----------------:" << endl;
+  cout << v0 << endl;
+  cout << "----------------------------------------" << endl;
+  /*vector<int> v1{1, 2, 3, 4, 5};
+  MakeJosephusPermutationV3(v1.begin(), v1.end(), 2);
+  cout << "Basic test example----------------------:" << endl;
+  cout << v1 << endl;
+  cout << "----------------------------------------" << endl;*/
 
   return 0;
 }
