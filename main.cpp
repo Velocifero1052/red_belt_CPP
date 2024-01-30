@@ -38,6 +38,8 @@ void MakeJosephusPermutationV1(RandomIt first, RandomIt last, uint32_t step_size
 
 }
 
+
+//it works, 6th test fails on time
 template<typename RandomIt>
 void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
   list<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
@@ -56,24 +58,30 @@ void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) 
 
 template<typename RandomIt>
 void MakeJosephusPermutationV3(RandomIt first, RandomIt last, uint32_t step_size) {
+
   list<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
-  size_t cur_pos = 0, prev_pos;
+  size_t cur_pos = 0, prev_pos = 0;
   auto cur_pos_it = pool.begin();
+  while (!pool.empty()) {
+    if (cur_pos >= prev_pos) {
+      cout << "if condition----------------------";
+      cout << "prev_pos: " << prev_pos << endl;
+      cout << "cur_pos: " << cur_pos << endl;
+      cout << "--------------------------------";
 
-  for (int i = 0; i < 20; i++) {
-
- /*   if (prev_pos > cur_pos) {
+      //advance(cur_pos_it, prev_pos - cur_pos);
+    } else {
+      cout << "else condition--------------------";
+      cout << "prev_pos: " << prev_pos << endl;
+      cout << "cur_pos: " << cur_pos << endl;
+      cout << "----------------------------------";
       cur_pos_it = pool.begin();
       advance(cur_pos_it, cur_pos);
-    } else {
-
-    }*/
-
-    *(first++) = std::move(*cur_pos_it);
-    pool.erase(cur_pos_it);
-    if (pool.empty()) {
-      break;
     }
+
+    //.erase(cur_pos_it);
+    pool.erase(pool.begin());
+    if (pool.empty()) break;
 
     cur_pos = (cur_pos + step_size - 1) % pool.size();
   }
@@ -159,22 +167,22 @@ void TestAvoidsCopying() {
 
 int main() {
 
- /* TestRunner tr;
+  /*TestRunner tr;
   RUN_TEST(tr, TestIntVector);
   RUN_TEST(tr, TestAvoidsCopying);*/
 
-  vector<int> v0{1,2,3,4,5,6,7,8,9};
+  vector<int> v0 {1, 2, 3, 4, 5, 6, 7, 8, 9};
   size_t step_size = 5;
 
-  MakeJosephusPermutation(v0.begin(), v0.end(), step_size);
+  MakeJosephusPermutationV3(v0.begin(), v0.end(), step_size);
   cout << "First, textbook example-----------------:" << endl;
   cout << v0 << endl;
   cout << "----------------------------------------" << endl;
-  /*vector<int> v1{1, 2, 3, 4, 5};
+  vector<int> v1{1, 2, 3, 4, 5};
   MakeJosephusPermutationV3(v1.begin(), v1.end(), 2);
   cout << "Basic test example----------------------:" << endl;
   cout << v1 << endl;
-  cout << "----------------------------------------" << endl;*/
+  cout << "----------------------------------------" << endl;
 
   return 0;
 }
