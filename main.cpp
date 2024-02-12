@@ -1,4 +1,5 @@
 #include "test_runner.h"
+#include "profile.h"
 
 #include <iterator>
 #include <numeric>
@@ -7,16 +8,16 @@
 
 using namespace std;
 
-template <typename T>
+/*template <typename T>
 struct Node {
   T item;
   Node<T>* next;
-  Node(const T& item_, Node<T>* t): item(item_), next(t) {}
+  Node(const T& item_, Node<T>* t): item(std::move(item_)), next(t) {}
 };
 
 
 template <typename RandomIt>
-void MakeJosephusPermutationV1(RandomIt first, RandomIt last, uint32_t step_size) {
+void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
   typedef Node<typename RandomIt::value_type>* link;
   link t;
 
@@ -29,19 +30,21 @@ void MakeJosephusPermutationV1(RandomIt first, RandomIt last, uint32_t step_size
   }
 
   while (x != x->next) {
-    *(first++) = std::move(x->item);
+    //*(first++) = std::move(x->item);
+    auto cur_pos = 0;
     for (int i = 1; i < step_size; i++) {
       x = x->next;
+      cur_pos++;
     }
     x->next = x->next->next;
   }
 
-}
+}*/
 
 
 //it works, 6th test fails on time
 template<typename RandomIt>
-void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
+void MakeJosephusPermutation_(RandomIt first, RandomIt last, uint32_t step_size) {
   list<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
   size_t cur_pos = 0;
   while (!pool.empty()) {
@@ -53,6 +56,7 @@ void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) 
       break;
     }
     cur_pos = (cur_pos + step_size - 1) % pool.size();
+    std::cout << "cur_pos: " << cur_pos << ", cur_pos_it distance from begin: " << std::distance(pool.begin(), cur_pos_it) << std::endl;
   }
 }
 
@@ -74,31 +78,28 @@ string list_as_string(list<T> l) {
 }
 
 template<typename RandomIt>
-void MakeJosephusPermutationV3(RandomIt first, RandomIt last, uint32_t step_size) {
-
+void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
   list<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
-  int cur_pos = 0, prev_pos;
+  size_t cur_pos = 0;
   auto cur_pos_it = pool.begin();
-
-
   while (!pool.empty()) {
+    *(first++) = std::move(*cur_pos_it);
+    auto prev_pos_it = pool.erase(cur_pos_it);
+    cur_pos_it = prev_pos_it;
 
-    //*(first++) = std::move(*cur_pos_it);
-    pool.erase(cur_pos_it);
-    if (pool.empty())
+    if (pool.empty()) {
       break;
-
-    prev_pos = cur_pos;
-    prev_pos--;
-    cur_pos = (cur_pos + step_size - 1) % pool.size();
-
-    if (cur_pos >= prev_pos) {
-      advance(cur_pos_it, cur_pos - prev_pos);
-    } else {
-      cur_pos_it = pool.begin();
-      advance(cur_pos_it, cur_pos);
     }
 
+    auto prev_pos = cur_pos;
+    cur_pos = (cur_pos + step_size - 1) % pool.size();
+
+    if (cur_pos < prev_pos) {
+      cur_pos_it = pool.begin();
+      advance(cur_pos_it, cur_pos);
+    } else {
+      advance(cur_pos_it, cur_pos - prev_pos);
+    }
   }
 }
 
@@ -107,13 +108,14 @@ void MakeJosephusPermutationV0(RandomIt first, RandomIt last, uint32_t step_size
   vector<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
     size_t cur_pos = 0;
     while (!pool.empty()) {
+      auto cur_pos_it = pool.begin() + cur_pos;
       *(first++) = std::move(pool[cur_pos]);
-      cout << "cur_pos: " << pool[cur_pos] << endl;
-      pool.erase(pool.begin() + cur_pos);
+      pool.erase(cur_pos_it);
     if (pool.empty()) {
       break;
     }
     cur_pos = (cur_pos + step_size - 1) % pool.size();
+    //std::cout << "cur_pos: " << cur_pos << ", cur_pos_it distance from begin: " << std::distance(pool.begin(), cur_pos_it) << std::endl;
   }
 }
 
@@ -122,6 +124,13 @@ vector<int> MakeTestVector() {
   iota(begin(numbers), end(numbers), 0);
   return numbers;
 }
+
+vector<int> MakeTestVector(size_t vector_size) {
+  vector<int> numbers(vector_size);
+  iota(begin(numbers), end(numbers), 0);
+  return numbers;
+}
+
 
 void TestIntVector() {
   const vector<int> numbers = MakeTestVector();
@@ -136,12 +145,6 @@ void TestIntVector() {
     ASSERT_EQUAL(numbers_copy, vector<int>({0, 3, 6, 9, 4, 8, 5, 2, 7, 1}));
   }
 }
-
-// Это специальный тип, который поможет вам убедиться, что ваша реализация
-// функции MakeJosephusPermutation не выполняет копирование объектов.
-// Сейчас вы, возможно, не понимаете как он устроен, однако мы расскажем,
-// почему он устроен именно так, далее в блоке про move-семантику —
-// в видео «Некопируемые типы»
 
 struct NoncopyableInt {
   int value;
@@ -183,11 +186,12 @@ void TestAvoidsCopying() {
 
 int main() {
 
- /* TestRunner tr;
+  TestRunner tr;
   RUN_TEST(tr, TestIntVector);
-  RUN_TEST(tr, TestAvoidsCopying);*/
+  RUN_TEST(tr, TestAvoidsCopying);
+  //RUN_TEST(tr, TestIntVector2);
 
-  vector<int> v0 {1, 2, 3, 4, 5, 6, 7, 8, 9};
+  /*vector<int> v0 {1, 2, 3, 4, 5, 6, 7, 8, 9};
   size_t step_size = 2;
 
   cout << "V3 version:" << endl;
@@ -199,13 +203,38 @@ int main() {
   cout << "V0 version:" << endl;
   MakeJosephusPermutationV0(v0.begin(), v0.end(), step_size);
   cout << v0 << endl;
-  cout << "----------------------------------------" << endl;
+  cout << "----------------------------------------" << endl;*/
 
   /*vector<int> v1{1, 2, 3, 4, 5};
   cout << "Basic test example----------------------:" << endl;
   MakeJosephusPermutationV3(v1.begin(), v1.end(), 2);
   cout << v1 << endl;
   cout << "----------------------------------------" << endl;*/
+
+
+  /*auto v = MakeTestVector(10);
+  cout << v << endl;
+
+  auto it = v.begin();
+  advance(it, v.size() - 1);
+  cout << *v.end() << endl;
+  cout << "Before erase: " << *it << endl;
+  auto next_it = v.erase(it);
+  cout << "Element after removal of the last: " << *next_it << endl;
+  cout << (next_it == v.end()) << endl;*/
+  auto v = MakeTestVector(100'000);
+  MakeJosephusPermutationV0(v.begin(), v.end(), 100);
+  cout << v << endl;
+
+  auto v2 = MakeTestVector(100'000);
+  MakeJosephusPermutation(v2.begin(), v2.end(), 100);
+
+  for (int i = 0; i < v.size(); ++i) {
+    if (v[i] != v2[i]) {
+      cout << "At index v[" << i << "] != v2[" << i << "]: " << v[i] << "!= "<< v2[i] << endl;
+    }
+  }
+
 
   return 0;
 }
