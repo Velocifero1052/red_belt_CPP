@@ -9,4 +9,5 @@ add_executable(red_belt_C__ main.cpp headers/Solutions.h headers/Logger.h header
         http_request.h
         stats.h
         stats.cpp
-        headers/joseph_permutation.h)
+        headers/joseph_permutation.h
+        headers/JosephusPermutation.h)
