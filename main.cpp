@@ -24,6 +24,8 @@ template <typename String>
 vector<Group<String>> GroupHeavyStrings(vector<String> strings) {
   // Напишите реализацию функции,
   // использовав не более 1 копирования каждого символа
+
+  return {};
 }
 
 
