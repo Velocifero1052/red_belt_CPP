@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <list>
 
 using namespace std;
 
@@ -24,6 +25,7 @@ template <typename String>
 vector<Group<String>> GroupHeavyStrings(vector<String> strings) {
   // Напишите реализацию функции,
   // использовав не более 1 копирования каждого символа
+  list<String> words(make_move_iterator(strings.begin()), make_move_iterator(strings.end()));
 
   return {};
 }
