@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <set>
+#include <unordered_map>
 
 using namespace std;
 
@@ -21,11 +23,37 @@ using Group = vector<String>;
 template <typename String>
 using Char = typename String::value_type;
 
+bool have_same_letters(const string& s1, const string& s2) {
+  std::string sorted1 = s1;
+  std::string sorted2 = s2;
+
+  std::sort(sorted1.begin(), sorted1.end());
+  std::sort(sorted2.begin(), sorted2.end());
+
+  // Remove duplicates
+  sorted1.erase(std::unique(sorted1.begin(), sorted1.end()), sorted1.end());
+  sorted2.erase(std::unique(sorted2.begin(), sorted2.end()), sorted2.end());
+
+  return sorted1 == sorted2;
+}
+
+
 template <typename String>
 vector<Group<String>> GroupHeavyStrings(vector<String> strings) {
-  // Напишите реализацию функции,
-  // использовав не более 1 копирования каждого символа
-  list<String> words(make_move_iterator(strings.begin()), make_move_iterator(strings.end()));
+
+  vector<Group<String>> res;
+  while (!strings.empty()) {
+    auto it = std::move(*strings.begin());
+    Group<String> g;
+    g.push_back(it);
+    for (int i = 1; i < strings.size(); i++) {
+      if (have_same_letters(it, strings[i])) {
+
+      }
+    }
+
+  }
+
 
   return {};
 }
@@ -52,11 +80,18 @@ void TestGroupingReal() {
 }
 
 
+
+
 int main() {
 
-  TestRunner tr;
+  /*TestRunner tr;
   RUN_TEST(tr, TestGroupingABC);
-  RUN_TEST(tr, TestGroupingReal);
+  RUN_TEST(tr, TestGroupingReal);*/
+
+  vector<string> strings = {"law", "port", "top", "laptop", "pot", "paloalto", "wall", "awl"};
+  string word1 = "laptop";
+  string word2 = "paloalto";
+  cout << have_same_letters(word1, word2) << endl;
 
   return 0;
 }
